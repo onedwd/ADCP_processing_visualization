@@ -1,3 +1,5 @@
+# This routine derives from one originally written by Emily Chisholm
+
 # Inputs: a raw ADCP file (.000, .664, or .pd0) and a csv file containing metadata
 # Corrects for magnetic declination
 # Flags bad leading and trailing ensembles
