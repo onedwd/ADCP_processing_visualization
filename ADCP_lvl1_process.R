@@ -76,7 +76,7 @@ if (sum(adp[['pressure']] == 0) > length(adp[['pressure']])/2){
   p <- round(gsw_p_from_z(z, adp[['latitude']]), digits = 0) #to match number of significant figures of instrument_depth
   
   adp[['pressure']] <- rep_len(p, length(adp[['pressure']])) # array of pres value in shape of pressure vector
-  adp@processingLog <- processingLogAppend(adp@processingLog, value = sprintf('Pressure values calculated from static instrument depth (%s m) using the TEOS-10 75-term expression for specific volume and rounded to three significant digits', adp[['instrument_depth']]))
+  adp@processingLog <- processingLogAppend(adp@processingLog, value = sprintf('Pressure values calculated from static instrument depth (%s m) using the TEOS-10 75-term expression for specific volume and rounded to %s significant digits', adp[['instrument_depth']], nchar(p))
   
   #print(adp[['pressure']][1:50])
 }
