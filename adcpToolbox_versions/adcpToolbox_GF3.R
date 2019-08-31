@@ -438,46 +438,32 @@ adpFlag <- function(adp,  pg = adp[['percentgd_threshold']], er= adp[['error_thr
   t <- adp[['time']]
   d <- t(matrix(dist, ncol = length(t), nrow = length(dist)))
   
-  #create matrix of maximum acceptable depth
-  r <- matrix(rmax, ncol=length(adp[['distance']]), nrow=length(rmax))
-
-  #read in pg per beam
-  g <- adp[['g', "numeric"]]
-  
-  #combine beam 1 and 4
-  lowpg <- g[,,1]+g[,,4]
-  
-  #extract error velocities
-  ERRV <- adp[['v']][,,4]
   
   #create logical array of flagged values based on low percent good, high error velocity or surface contamination
   dim = dim(adp[['v']])
   flag <- array(FALSE, dim = dim)
+  
   # Changed H.Hourston July 8, 2019 to have (i in 1:4) instead of (i in 1:3) to flag ERRV too
   for (i in 1:4)
     # Changed R.Pettipas 04-SEP-2018 to apply "as.POSIXct" to adp[['time_coverage_start']] and adp[['time_coverage_end']]
     # as these are character variables.
     if (as.numeric(level) == 0 | as.numeric(level) == 1){
-      if (again == FALSE){
-        flag[,,i] <- adp[['time']] < as.POSIXct(adp[['time_coverage_start']],tz='UTC') | adp[['time']] > as.POSIXct(adp[['time_coverage_end']],tz='UTC')
-      } else {
-        next
-      }  
-    } else if (as.numeric(level) == 2){
-      if (again == FALSE){
-        #original line of code
-        flag[,,i] <- (lowpg < pg) | (abs(ERRV) > er) | r < d | adp[['time']] < as.POSIXct(adp[['time_coverage_start']],tz='UTC') | adp[['time']] > as.POSIXct(adp[['time_coverage_end']],tz='UTC')
-      } else {
-        #Assuming surface bins were cut for level 2 processing
-        flag[,,i] <- (lowpg < pg) | (abs(ERRV) > er)
-      }
-    #This next chunk is theoretical as no processing higher than level 1 was conducted
-    } else if (as.numeric(level) > 2){
-      if (again == FALSE){
-        flag[,,i] <- (lowpg < pg) | (abs(ERRV) > er) | r < d | adp[['time']] < as.POSIXct(adp[['time_coverage_start']],tz='UTC') | adp[['time']] > as.POSIXct(adp[['time_coverage_end']],tz='UTC')
-      } else {
-        next
-      }
+      flag[,,i] <- adp[['time']] < as.POSIXct(adp[['time_coverage_start']],tz='UTC') | adp[['time']] > as.POSIXct(adp[['time_coverage_end']],tz='UTC')
+    } else if (as.numeric(level) >= 2){
+      #create matrix of maximum acceptable depth
+      r <- matrix(rmax, ncol=length(adp[['distance']]), nrow=length(rmax))
+      
+      #read in pg per beam
+      g <- adp[['g', "numeric"]]
+      
+      #combine beam 1 and 4
+      lowpg <- g[,,1]+g[,,4]
+      
+      #extract error velocities
+      ERRV <- adp[['v']][,,4]
+      
+      #original line of code
+      flag[,,i] <- (lowpg < pg) | (abs(ERRV) > er) | r < d | adp[['time']] < as.POSIXct(adp[['time_coverage_start']],tz='UTC') | adp[['time']] > as.POSIXct(adp[['time_coverage_end']],tz='UTC')
     } else {
       print('Processing_level must be an integer greater than or equal to 0.')
     }
@@ -784,17 +770,22 @@ oceNc_create <- function(adp, name, metadata){
     dlname <- "ADCP_correlation_magnitude_beam_4"
     cm4_def <- ncvar_def("CMAG_04", "counts", list(timedim, distdim, stationdim), FillValue, dlname, prec = "float")
     
-    dlname <- "percent_good_beam_1"
-    pg1_def <- ncvar_def("PGDP_01", "percent", list(timedim, distdim, stationdim), FillValue, dlname, prec = "float")
-    
-    dlname <- "percent_good_beam_2"
-    pg2_def <- ncvar_def("PGDP_02", "percent", list(timedim, distdim, stationdim), FillValue, dlname, prec = "float")
-    
-    dlname <- "percent_good_beam_3"
-    pg3_def <- ncvar_def("PGDP_03", "percent", list(timedim, distdim, stationdim), FillValue, dlname, prec = "float")
-    
-    dlname <- "percent_good_beam_4"
-    pg4_def <- ncvar_def("PGDP_04", "percent", list(timedim, distdim, stationdim), FillValue, dlname, prec = "float")
+    #H.Hourston Aug 29, 2019: Encountered a Sentinel V instrument without percent good data, so omit if the case
+    if (length(adp[['g']]) != 0){
+      dlname <- "percent_good_beam_1"
+      pg1_def <- ncvar_def("PGDP_01", "percent", list(timedim, distdim, stationdim), FillValue, dlname, prec = "float")
+      
+      dlname <- "percent_good_beam_2"
+      pg2_def <- ncvar_def("PGDP_02", "percent", list(timedim, distdim, stationdim), FillValue, dlname, prec = "float")
+      
+      dlname <- "percent_good_beam_3"
+      pg3_def <- ncvar_def("PGDP_03", "percent", list(timedim, distdim, stationdim), FillValue, dlname, prec = "float")
+      
+      dlname <- "percent_good_beam_4"
+      pg4_def <- ncvar_def("PGDP_04", "percent", list(timedim, distdim, stationdim), FillValue, dlname, prec = "float")
+    } else {
+      warning('No percent good data (g) detected; not creating percent good variables')
+    }
     
     dlname <- "pitch"
     p_def <- ncvar_def("PTCH", "degrees", list( timedim,  stationdim), FillValue, dlname, prec = "float")
@@ -956,10 +947,10 @@ oceNc_create <- function(adp, name, metadata){
     
     dlname <- "ADCP_echo_intensity_beam_1"
     b1_def <- ncvar_def("BEAM_01", "counts", list(timedim, distdim, stationdim), FillValue, dlname, prec = "float")
-    
+    if (length(adp[['g']]) != 0){
     dlname <- "percent_good_beam_1"
     pg1_def <- ncvar_def("PGDP_01", "percent", list(timedim, distdim, stationdim), FillValue, dlname, prec = "float")
-    
+    }
     dlname <- "time_string"
     ts_def <- ncvar_def("DTUT8601", units = "",dim =  list(dimnchar, timedim), missval = NULL, name =  dlname, prec = "char")
     
@@ -991,10 +982,12 @@ oceNc_create <- function(adp, name, metadata){
     ncvar_put(ncout, cm2_def, adp[['q', 'numeric']][,,2])
     ncvar_put(ncout, cm3_def, adp[['q', 'numeric']][,,3])
     ncvar_put(ncout, cm4_def, adp[['q', 'numeric']][,,4])
+    if (length(adp[['g']]) != 0){
     ncvar_put(ncout, pg1_def, adp[['g', 'numeric']][,,1])
     ncvar_put(ncout, pg2_def, adp[['g', 'numeric']][,,2])
     ncvar_put(ncout, pg3_def, adp[['g', 'numeric']][,,3])
     ncvar_put(ncout, pg4_def, adp[['g', 'numeric']][,,4])
+    }
     ncvar_put(ncout, p_def, adp[['pitch']])
     ncvar_put(ncout, r_def, adp[['roll']]*(180/pi))
     ncvar_put(ncout, hght_def, (adp[['distance']] - adp[['sensor_depth']]))
@@ -1205,6 +1198,7 @@ oceNc_create <- function(adp, name, metadata){
     ncatt_put(ncout, "CMAG_04", "sensor_type", adp[['instrumentType']])
     ncatt_put(ncout, "CMAG_04", "sensor_depth", adp[['sensor_depth']])
     ncatt_put(ncout, "CMAG_04", "serial_number", adp[['serialNumber']])
+    if (length(adp[['g']]) != 0){
     ncatt_put(ncout, "PGDP_01", "sensor_type", adp[['instrumentType']])
     ncatt_put(ncout, "PGDP_01", "sensor_depth", adp[['sensor_depth']])
     ncatt_put(ncout, "PGDP_01", "serial_number", adp[['serialNumber']])
@@ -1217,6 +1211,7 @@ oceNc_create <- function(adp, name, metadata){
     ncatt_put(ncout, "PGDP_04", "sensor_type", adp[['instrumentType']])
     ncatt_put(ncout, "PGDP_04", "sensor_depth", adp[['sensor_depth']])
     ncatt_put(ncout, "PGDP_04", "serial_number", adp[['serialNumber']])
+    }
     ncatt_put(ncout, "HEAD", "sensor_type", adp[['instrumentType']])
     ncatt_put(ncout, "HEAD", "sensor_depth", adp[['sensor_depth']])
     ncatt_put(ncout, "HEAD", "serial_number", adp[['serialNumber']])
@@ -1238,10 +1233,12 @@ oceNc_create <- function(adp, name, metadata){
     ncatt_put(ncout, "CMAG_02", "generic_name", "CM")
     ncatt_put(ncout, "CMAG_03", "generic_name", "CM")
     ncatt_put(ncout, "CMAG_04", "generic_name", "CM")
+    if (length(adp[['g']]) != 0){
     ncatt_put(ncout, "PGDP_01", "generic_name", "PGd")
     ncatt_put(ncout, "PGDP_02", "generic_name", "PGd")
     ncatt_put(ncout, "PGDP_03", "generic_name", "PGd")
     ncatt_put(ncout, "PGDP_04", "generic_name", "PGd")
+    }
     ncatt_put(ncout, "hght", "generic_name", "height")
     ncatt_put(ncout, "hght", "sensor_type", adp[['instrumentType']])
     ncatt_put(ncout, "hght", "sensor_depth", adp[['sensor_depth']])
@@ -1360,10 +1357,12 @@ oceNc_create <- function(adp, name, metadata){
     ncatt_put(ncout, "BEAM_02", "sdn_parameter_urn", "SDN:P01::TNIHCE02")
     ncatt_put(ncout, "BEAM_03", "sdn_parameter_urn", "SDN:P01::TNIHCE03")
     ncatt_put(ncout, "BEAM_04", "sdn_parameter_urn", "SDN:P01::TNIHCE04")
+    if (length(adp[['g']]) != 0){
     ncatt_put(ncout, "PGDP_01", "sdn_parameter_urn", "SDN:P01::PCGDAP00")
     ncatt_put(ncout, "PGDP_02", "sdn_parameter_urn", "SDN:P01::PCGDAP02")
     ncatt_put(ncout, "PGDP_03", "sdn_parameter_urn", "SDN:P01::PCGDAP03")
     ncatt_put(ncout, "PGDP_04", "sdn_parameter_urn", "SDN:P01::PCGDAP04")
+    }
     ncatt_put(ncout, "hght", "sdn_parameter_urn", "SDN:P01::DISTTRAN")
     ncatt_put(ncout, "DEPH", "sdn_parameter_urn", "SDN:P01::DEPFP01")
     ncatt_put(ncout, "te90", "sdn_parameter_urn", "SDN:P01::TEMPPR01")
@@ -1388,10 +1387,12 @@ oceNc_create <- function(adp, name, metadata){
     ncatt_put(ncout, "BEAM_02", "sdn_parameter_name", "Echo intensity from the water body by moored acoustic doppler current profiler (ADCP) beam 2")
     ncatt_put(ncout, "BEAM_03", "sdn_parameter_name", "Echo intensity from the water body by moored acoustic doppler current profiler (ADCP) beam 3")
     ncatt_put(ncout, "BEAM_04", "sdn_parameter_name", "Echo intensity from the water body by moored acoustic doppler current profiler (ADCP) beam 4")
+    if (length(adp[['g']]) != 0){
     ncatt_put(ncout, "PGDP_01", "sdn_parameter_name", "Acceptable proportion of signal returns by moored acoustic doppler current profiler (ADCP) beam 1")
     ncatt_put(ncout, "PGDP_02", "sdn_parameter_name", "Acceptable proportion of signal returns by moored acoustic doppler current profiler (ADCP) beam 2")
     ncatt_put(ncout, "PGDP_03", "sdn_parameter_name", "Acceptable proportion of signal returns by moored acoustic doppler current profiler (ADCP) beam 3")
     ncatt_put(ncout, "PGDP_04", "sdn_parameter_name", "Acceptable proportion of signal returns by moored acoustic doppler current profiler (ADCP) beam 4")
+    }
     ncatt_put(ncout, "DEPH", "sdn_parameter_name", "Depth below surface of the water body")
     ncatt_put(ncout, "te90", "sdn_parameter_name", "Temperature of the water body")
     ncatt_put(ncout, "PTCH", "sdn_parameter_name", "Orientation (pitch) of measurement platform by inclinometer")
@@ -1414,10 +1415,12 @@ oceNc_create <- function(adp, name, metadata){
     ncatt_put(ncout, "BEAM_02", "sdn_uom_urn", "SDN:P06::UCNT")
     ncatt_put(ncout, "BEAM_03", "sdn_uom_urn", "SDN:P06::UCNT")
     ncatt_put(ncout, "BEAM_04", "sdn_uom_urn", "SDN:P06::UCNT")
+    if (length(adp[['g']]) != 0){
     ncatt_put(ncout, "PGDP_01", "sdn_uom_urn", "SDN:P06::UPCT")
     ncatt_put(ncout, "PGDP_02", "sdn_uom_urn", "SDN:P06::UPCT")
     ncatt_put(ncout, "PGDP_03", "sdn_uom_urn", "SDN:P06::UPCT")
     ncatt_put(ncout, "PGDP_04", "sdn_uom_urn", "SDN:P06::UPCT")
+    }
     ncatt_put(ncout, "hght", "sdn_uom_urn", "SDN:P06::ULAA")
     ncatt_put(ncout, "DEPH", "sdn_uom_urn", "SDN:P06:ULAA")
     ncatt_put(ncout, "te90", "sdn_uom_urn", "SDN:P06::UPAA")
@@ -1440,10 +1443,12 @@ oceNc_create <- function(adp, name, metadata){
     ncatt_put(ncout, "BEAM_02", "sdn_uom_name", "Counts")
     ncatt_put(ncout, "BEAM_03", "sdn_uom_name", "Counts")
     ncatt_put(ncout, "BEAM_04", "sdn_uom_name", "Counts")
+    if (length(adp[['g']]) != 0){
     ncatt_put(ncout, "PGDP_01", "sdn_uom_name", "Percent")
     ncatt_put(ncout, "PGDP_02", "sdn_uom_name", "Percent")
     ncatt_put(ncout, "PGDP_03", "sdn_uom_name", "Percent")
     ncatt_put(ncout, "PGDP_04", "sdn_uom_name", "Percent")
+    }
     ncatt_put(ncout, "hght", "sdn_uom_name", "Metres")
     ncatt_put(ncout, "DEPH", "sdn_uom_name", "Metres")
     ncatt_put(ncout, "te90", "sdn_uom_name", "Celsius degree")
@@ -1530,9 +1535,11 @@ oceNc_create <- function(adp, name, metadata){
     ncatt_put(ncout, "BEAM_01", "sensor_type", adp[['instrumentType']])
     ncatt_put(ncout, "BEAM_01", "sensor_depth", adp[['sensor_depth']])
     ncatt_put(ncout, "BEAM_01", "serial_number", adp[['serialNumber']])
+    if (length(adp[['g']]) != 0){
     ncatt_put(ncout, "PGDP_01", "sensor_type", adp[['instrumentType']])
     ncatt_put(ncout, "PGDP_01", "sensor_depth", adp[['sensor_depth']])
     ncatt_put(ncout, "PGDP_01", "serial_number", adp[['serialNumber']])
+    }
     ncatt_put(ncout, "EWCT", "generic_name", "u")
     ncatt_put(ncout, "NSCT", "generic_name", "v")
     ncatt_put(ncout, "VCSP", "generic_name", "w")
@@ -1583,7 +1590,9 @@ oceNc_create <- function(adp, name, metadata){
     ncatt_put(ncout, "VCSP", "sdn_parameter_urn", "SDN:P01::LRZAAP01")
     ncatt_put(ncout, "ERRV", "sdn_parameter_urn", "SDN:P01::LERRAP01")
     ncatt_put(ncout, "BEAM_01", "sdn_parameter_urn", "SDN:P01::TNIHCE01")
+    if (length(adp[['g']]) != 0){
     ncatt_put(ncout, "PGDP_01", "sdn_parameter_urn", "SDN:P01::PCGDAP00")
+    }
     ncatt_put(ncout, "lon", "sdn_parameter_urn", "SDN:P01::ALONZZ01")
     ncatt_put(ncout, "lat", "sdn_parameter_urn", "SDN:P01::ALATZZ01")
     ncatt_put(ncout, "EWCT", "sdn_parameter_name", "Eastward current velocity (Eulerian) in the water body by moored acoustic doppler current profiler (ADCP)")
@@ -1602,7 +1611,9 @@ oceNc_create <- function(adp, name, metadata){
     ncatt_put(ncout, "VCSP", "sdn_uom_urn", "SDN:P06::UVAA")
     ncatt_put(ncout, "ERRV", "sdn_uom_urn", "SDN:P06::UVAA")
     ncatt_put(ncout, "BEAM_01", "sdn_uom_urn", "SDN:P06::UCNT")
+    if (length(adp[['g']]) != 0){
     ncatt_put(ncout, "PGDP_01", "sdn_uom_urn", "SDN:P06::UPCT")
+    }
     ncatt_put(ncout, "lon", "sdn_uom_urn", "SDN:P06::DEGE")
     ncatt_put(ncout, "lat", "sdn_uom_urn", "SDN:P06:DEGN")
     
@@ -1684,7 +1695,7 @@ oceNc_create <- function(adp, name, metadata){
     
     ncatt_put(ncout, "CMAG_04", "data_min", min(adp[['q', 'numeric']][,,4], na.rm= TRUE))
     ncatt_put(ncout, "CMAG_04", "data_max", max(adp[['q', 'numeric']][,,4], na.rm= TRUE))
-    
+    if (length(adp[['g']]) != 0){
     ncatt_put(ncout, "PGDP_01", "data_min", min(adp[['g', 'numeric']][,,1], na.rm= TRUE))
     ncatt_put(ncout, "PGDP_01", "data_max", max(adp[['g', 'numeric']][,,1], na.rm= TRUE))# eg min 25 % good
     ncatt_put(ncout, "PGDP_02", "data_min", min(adp[['g', 'numeric']][,,2], na.rm= TRUE))
@@ -1693,6 +1704,7 @@ oceNc_create <- function(adp, name, metadata){
     ncatt_put(ncout, "PGDP_03", "data_max", max(adp[['g', 'numeric']][,,3], na.rm= TRUE))
     ncatt_put(ncout, "PGDP_04", "data_min", min(adp[['g', 'numeric']][,,4], na.rm= TRUE))
     ncatt_put(ncout, "PGDP_04", "data_max", max(adp[['g', 'numeric']][,,4], na.rm= TRUE))
+    }
     # H.Hourston Aug 6, 2019: data_max for these variables minus ROLL were the fill value for some reason
     # ncatt_put(ncout, "hght", "data_min", min(adp[['depth', 'data']]))
     # ncatt_put(ncout, "hght", "data_max", max(adp[['depth', 'data']]))
