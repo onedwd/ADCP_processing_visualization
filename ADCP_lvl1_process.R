@@ -1,9 +1,14 @@
-# This routine derives from one originally written by Emily Chisholm
+# This script was adapted by Hana Hourston from one written by Emily Chisholm
 
 # Inputs: a raw ADCP file (.000, .664, or .pd0) and a csv file containing metadata
 # Corrects for magnetic declination
 # Flags bad leading and trailing ensembles
 # Creates a netCDF file
+
+# WARNING: Use caution when working with ADCPs missing a pressure sensor. If the serial number is known
+# for the instrument, the safest choice is to add it to line 82 so that pressure values may be calculated
+
+
 
 library(ADCP) 
 library(ncdf4)
@@ -11,6 +16,7 @@ library(oce)
 library(tools)
 library(english)
 
+################################################
 
 mean_orientation <- function(orientation){
   upward = 0
@@ -30,6 +36,9 @@ mean_orientation <- function(orientation){
     return('downward')
   }
 }
+
+
+########################################
 
 
 wd <- 'your working directory here'
@@ -73,8 +82,9 @@ if (nchar(adp[['serialNumber']]) == 3){
 
 # If missing pressure sensor, calculate pressure based on static (instrument) depth
 # In these cases pressure may be all zeros, or it may have some NAs, or one very large negative or positive value with the rest zeros
-# Use sum() to find the number of occurrences of zero values; it should be over half the total number of values
-if (sum(adp[['pressure']] == 0) > length(adp[['pressure']])/2){
+# Other anomalour value combinations may occur with missing pressure sensors
+# Use sum() to find the number of occurrences of zero values
+if (sum(adp[['pressure']] == 0) > length(adp[['pressure']])/2 | adp[['instrumentSubtype']] == 'BroadBand' | adp[['serialNumber']] == '1588' | adp[['serialNumber']] == '3694' | adp[['serialNumber']] == '5588'){
   z <- -adp[['instrument_depth']] #since z positive is up and depth positive is down
   p <- round(gsw_p_from_z(z, adp[['latitude']]), digits = 0) #to match number of significant figures of instrument_depth
   
@@ -135,15 +145,13 @@ adp <- oceSetMetadata(adp, 'time_coverage_start', st)
 adp <- oceSetMetadata(adp, 'time_coverage_end', et)
 
 
-### Aug 28, 2019: Conversion not currently safe since it uses orientation (See issue #1588 on oce GitHub repository)
-### Orientation was recently changed in the oce R package to the array of all the values
 # Convert coordinate system, oceCoordinate, if not in enu
 # since enu is the only coordinate system accepted by applyMagneticDeclinationAdp()
-# coord <- adp[['oceCoordinate']]
-# if (coord == 'enu'){
-# } else {
-#   adp <- toEnuAdp(adp)
-# }
+coord <- adp[['oceCoordinate']]
+if (coord == 'enu'){
+} else {
+  adp <- toEnuAdp(adp)
+}
 
 
 # apply magnetic declination
@@ -209,5 +217,5 @@ adp <-exportPL(adp)
 oceNc_create(adp, ncname_L)
 
 
-#Remove everything from R workspace
-#rm(list=ls(all=TRUE))
+# Remove everything from R workspace
+# rm(list=ls(all=TRUE))
