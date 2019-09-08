@@ -177,19 +177,10 @@ adp <- adpFlag(adp, adp[['percentgd_threshold']], adp[['error_threshold']])
 adpClean <- handleFlags(adp, flags = list(all=c(0)), actions = list('NA')) #flags=4
 
 
-# Check data visually post processing
-# Dataset still maintains complete integrity
-endPlots(adpClean, path = plotDir) 
-
-
 # Make bin plots for u, v, w, er
 for (qc in c('u', 'v', 'w', 'er')){
   qcPlots(adp, QC = qc, path = getwd())
 }
-
-
-# exit R_Plots subdirectory for netCDF file output
-setwd(wd)
 
 
 #these set values to NA and don't remove them
@@ -198,6 +189,15 @@ adp <- limit_depthbytime(adp, tz = "UTC")
 
 # limit time, v, pressure, salinity, temp, pitch, roll, and heading based on deployment/recovery times
 adp <- limit_time(adp)
+
+
+# Check data visually post processing
+# Dataset still maintains complete integrity
+endPlots(adpClean, path = plotDir) 
+
+
+# exit R_Plots subdirectory for netCDF file output
+setwd(wd)
 
 
 # Fix orientation name so it can be used by oceNc_create() to calculate geospatial_vertical_min and max
