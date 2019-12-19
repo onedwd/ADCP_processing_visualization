@@ -1,3 +1,0 @@
-This text file is to accompany the 'ADCP_metadata_template.csv' file used for level 1 processing of raw ADCP files.
-
-In the Instructions column, 'Required' means the user must enter a value for the specific metadata item in order for the R script that performs the processing to run. 'Optional' means the user doesn't need to enter a value for the specific metadata item. 'Do not touch' means that the value for the metadata item has been set and shouldn't be changed, or that the value will be added in automatically by the R script and should not be added by the user directly into the csv metadata file.
