@@ -38,6 +38,7 @@ station,TOF1,The station name for the mooring,Required
 deployment_number,,The deployment number (used to follow a lettering scheme),Required
 variable_code_reference,IODC GF3,The variable code reference for the netCDF file that is to be outputted,Do not touch
 water_depth,37,Water depth in meters,Required
-station_number,1,The number of stations that files will be compiled from to create the netCDF file,Required
+station_number,1,The number of stations that files will be compiled from to create the netCDF file,Required
+
 instrumentSubtype,workhorse,The ADCP instrument subtype,Required
 serialNumber,,The ADCP serial number,Required
