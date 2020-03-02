@@ -6,7 +6,7 @@ Sample files for using the `ADCP` package: \
     R processing script: *ADCP_process_lvl1.R* \
 
 Sample file for creating N/E and along- and cross-shore current velocity plots from ADCP files in netCDF format: \
-    Python plotting script: \
+    Python plotting script: *plot_westcoast_nc_P01.py*\
 
 Sample files for using `ADCP` from Python: \
     Python script for calling R: *callR_fromPython/callR_ADCPprocessing.py* \
