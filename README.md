@@ -5,7 +5,7 @@ Sample files for using the `ADCP` package: \
     ADCP metadata template: *ADCP_metadata_template/ADCP_metadata_template_L1.csv* \
     R processing script: *ADCP_process_lvl1.R* \
 
-Sample file for creating N/E and along- and cross-shore current velocity plots from ADCP files in netCDF format: \
+Script for creating N/E and along- and cross-shore current velocity plots from a netCDF-format ADCP file: \
     Python plotting script: *plot_westcoast_nc_P01.py*\
 
 Sample files for using `ADCP` from Python: \
@@ -19,6 +19,8 @@ Sample ADCP files can be found in the subfolder **sample_files**: \
 
 Other versions of adcpToolbox.R besides adcpToolbox_P01.R that is currently in the forked repository mooredDataProcessing_adcp can be found in **adcpToolbox_versions**.
 
+Scripts for opening and closing netCDF files in R and Python can be found in **open_nc**.
+
 ## Installation
 It is not necessary that this whole repository be cloned by a user. It is recommended that files in this repository be downloaded individually as needed.
 
@@ -31,6 +33,7 @@ Steps to download an individual file from a GitHub repository:
 ### Dependencies of ADCP_lvl1_process.R and ADCP_lvl1_process_pycalled.R
 To install dependencies:
 
-        install.packages("tools")
-        install.packages("gsw")
-        install.packages("english")
+    install.packages("tools")
+    install.packages("gsw")
+    install.packages("english")
+        
