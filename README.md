@@ -37,7 +37,7 @@ Steps to download an individual file from a GitHub repository:
         wget https://raw.githubusercontent.com/username/reponame/path/to/file
     
 ### Dependencies of ADCP_lvl1_process.R and ADCP_lvl1_process_pycalled.R
-To install dependencies:
+To install dependencies in R:
 
     install.packages("tools")
     install.packages("gsw")
