@@ -12,7 +12,7 @@ Python script for creating N/E and along- and cross-shore current velocity plots
 #### Sample files for using `ADCP` from Python: in the subfolder *callR_fromPython*
 Python script for calling R: *callR_ADCPprocessing.py*
 
-Modified version of *ADCP_lvl1_process.R* that is callable from Python: *ADCP_process_lvl1_pycalled.R*
+Modified version of *ADCP_process_lvl1.R* that is callable from Python: *ADCP_process_lvl1_pycalled.R*
 
 #### Sample ADCP files: in the subfolder *sample_files*
 Raw ADCP file (not named according to conventions): *A1_UU_8745.000*
