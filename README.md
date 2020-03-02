@@ -9,12 +9,12 @@ R processing script: *ADCP_process_lvl1.R*
 #### Plotting from netCDF files
 Python script for creating N/E and along- and cross-shore current velocity plots from a netCDF-format ADCP file: *plot_westcoast_nc_P01.py*
 
-#### Sample files for using `ADCP` from Python
-Python script for calling R: *callR_fromPython/callR_ADCPprocessing.py*
+#### Sample files for using `ADCP` from Python: in the subfolder *callR_fromPython*
+Python script for calling R: *callR_ADCPprocessing.py*
 
 Modified version of *ADCP_lvl1_process.R* that is callable from Python: *ADCP_process_lvl1_pycalled.R*
 
-#### Sample ADCP files: can be found in the subfolder *sample_files*
+#### Sample ADCP files: in the subfolder *sample_files*
 Raw ADCP file (not named according to conventions): *A1_UU_8745.000*
 
 Filled-out csv metadata file for the above raw ADCP file: *a1_20080430_20080918_0489m_meta_L1.csv*
