@@ -12,12 +12,12 @@ Sample files for using `ADCP` from Python: \
     Python script for calling R: *callR_fromPython/callR_ADCPprocessing.py* \
     Modified version of *ADCP_lvl1_process.R* that is callable from Python: *ADCP_process_lvl1_pycalled.R* \
 
-Sample ADCP files: \
+Sample ADCP files can be found in the subfolder **sample_files**: \
     Raw ADCP file (not named according to conventions): *A1_UU_8745.000* \
-    Filled-out csv metadata file for the above raw ADCP file: \
-    Output netCDF file from the above raw ADCP file, produced using *ADCP_lvl1_process.R*: \
+    Filled-out csv metadata file for the above raw ADCP file: *a1_20080430_20080918_0489m_meta_L1.csv*\
+    Output netCDF file from the above raw ADCP file, produced using *ADCP_lvl1_process.R*: *a1_20080430_20080918_0489m.adcp.L1.csv* \
 
-Other versions of adcpToolbox.R besides adcpToolbox_P01.R that is currently in the forked repository mooredDataProcessing_adcp.
+Other versions of adcpToolbox.R besides adcpToolbox_P01.R that is currently in the forked repository mooredDataProcessing_adcp can be found in **adcpToolbox_versions**.
 
 ## Installation
 It is not necessary that this whole repository be cloned by a user. It is recommended that files in this repository be downloaded individually as needed.
@@ -31,6 +31,6 @@ Steps to download an individual file from a GitHub repository:
 ### Dependencies of ADCP_lvl1_process.R and ADCP_lvl1_process_pycalled.R
 To install dependencies:
 
-    install.packages("tools")
-    install.packages("gsw")
-    install.packages("english")
+        install.packages("tools")
+        install.packages("gsw")
+        install.packages("english")
