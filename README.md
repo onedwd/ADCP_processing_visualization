@@ -13,7 +13,7 @@ Sample files for using `ADCP` from Python: \
     Modified version of *ADCP_lvl1_process.R* that is callable from Python: *ADCP_process_lvl1_pycalled.R* \
 
 Sample ADCP files: \
-    Raw ADCP file (not named according to conventions): \
+    Raw ADCP file (not named according to conventions): *A1_UU_8745.000* \
     Filled-out csv metadata file for the above raw ADCP file: \
     Output netCDF file from the above raw ADCP file, produced using *ADCP_lvl1_process.R*: \
 
