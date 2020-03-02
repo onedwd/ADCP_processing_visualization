@@ -1,24 +1,30 @@
 # ADCP_processing_visualization
 This repository contains files associated with using the `ADCP` package (https://github.com/hhourston/mooredDataProcessing_adcp). Usage of the `ADCP` package is directed here.
 
-Sample files for using the `ADCP` package: \
-    ADCP metadata template: *ADCP_metadata_template/ADCP_metadata_template_L1.csv* \
-    R processing script: *ADCP_process_lvl1.R* \
+##### Sample files for using the `ADCP` package
+ADCP metadata template: *ADCP_metadata_template/ADCP_metadata_template_L1.csv* \
 
-Script for creating N/E and along- and cross-shore current velocity plots from a netCDF-format ADCP file: \
-    Python plotting script: *plot_westcoast_nc_P01.py*\
+R processing script: *ADCP_process_lvl1.R* \
 
-Sample files for using `ADCP` from Python: \
-    Python script for calling R: *callR_fromPython/callR_ADCPprocessing.py* \
-    Modified version of *ADCP_lvl1_process.R* that is callable from Python: *ADCP_process_lvl1_pycalled.R* \
+##### Plotting from netCDF files
+Python script for creating N/E and along- and cross-shore current velocity plots from a netCDF-format ADCP file: *plot_westcoast_nc_P01.py*\
 
-Sample ADCP files can be found in the subfolder **sample_files**: \
-    Raw ADCP file (not named according to conventions): *A1_UU_8745.000* \
-    Filled-out csv metadata file for the above raw ADCP file: *a1_20080430_20080918_0489m_meta_L1.csv*\
-    Output netCDF file from the above raw ADCP file, produced using *ADCP_lvl1_process.R*: *a1_20080430_20080918_0489m.adcp.L1.csv* \
+##### Sample files for using `ADCP` from Python
+Python script for calling R: *callR_fromPython/callR_ADCPprocessing.py* \
 
+Modified version of *ADCP_lvl1_process.R* that is callable from Python: *ADCP_process_lvl1_pycalled.R* \
+
+##### Sample ADCP files: can be found in the subfolder *sample_files*
+Raw ADCP file (not named according to conventions): *A1_UU_8745.000* \
+
+Filled-out csv metadata file for the above raw ADCP file: *a1_20080430_20080918_0489m_meta_L1.csv*\
+
+Output netCDF file from the above raw ADCP file, produced using *ADCP_lvl1_process.R*: *a1_20080430_20080918_0489m.adcp.L1.csv* \
+
+##### adcpToolbox.R versions
 Other versions of adcpToolbox.R besides adcpToolbox_P01.R that is currently in the forked repository mooredDataProcessing_adcp can be found in **adcpToolbox_versions**.
 
+##### Opening netCDF files
 Scripts for opening and closing netCDF files in R and Python can be found in **open_nc**.
 
 ## Installation
