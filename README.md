@@ -22,7 +22,7 @@ Filled-out csv metadata file for the above raw ADCP file: *a1_20080430_20080918_
 Output netCDF file from the above raw ADCP file, produced using *ADCP_lvl1_process.R*: *a1_20080430_20080918_0489m.adcp.L1.csv*
 
 #### adcpToolbox.R versions
-Other versions of adcpToolbox.R besides adcpToolbox_P01.R that is currently in the forked repository mooredDataProcessing_adcp can be found in **adcpToolbox_versions**. These versions are deprecated and should not be used.
+Other versions of adcpToolbox.R besides adcpToolbox_P01.R (which is in https://github.com/hhourston/mooredDataProcessing_adcp) can be found in **adcpToolbox_versions**. These versions are deprecated and should not be used.
 
 #### Opening netCDF files
 Scripts for opening and closing netCDF files in R and Python can be found in **open_nc**.
