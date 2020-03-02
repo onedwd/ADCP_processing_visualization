@@ -2,20 +2,20 @@
 This repository contains files associated with using the `ADCP` package (https://github.com/hhourston/mooredDataProcessing_adcp). Usage of the `ADCP` package is directed here.
 
 Sample files for using the `ADCP` package: \
-ADCP metadata template: \
-R processing script: \
+    ADCP metadata template: \
+    R processing script: \
 
 Sample file for creating N/E and along- and cross-shore current velocity plots from ADCP files in netCDF format: \
-Python plotting script: \
+    Python plotting script: \
 
 Sample files for using `ADCP` from Python: \
-Python script for calling R: \
-Modified version of *ADCP_lvl1_process.R* that is callable from Python: \
+    Python script for calling R: \
+    Modified version of *ADCP_lvl1_process.R* that is callable from Python: \
 
 Sample ADCP files: \
-Raw ADCP file (not named according to conventions): \
-Filled-out csv metadata file for the above raw ADCP file: \
-Output netCDF file from the above raw ADCP file, produced using *ADCP_lvl1_process.R*: \
+    Raw ADCP file (not named according to conventions): \
+    Filled-out csv metadata file for the above raw ADCP file: \
+    Output netCDF file from the above raw ADCP file, produced using *ADCP_lvl1_process.R*: \
 
 Other versions of adcpToolbox.R besides adcpToolbox_P01.R that is currently in the forked repository mooredDataProcessing_adcp.
 
