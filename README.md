@@ -32,9 +32,11 @@ It is not necessary that this whole repository be cloned by a user. It is recomm
 
 Steps to download an individual file from a GitHub repository:
 1. Open a file in a GitHub repository and click on the button "raw" in the top right corner to view the raw file in a new browser tab. Copy the url of the raw file (e.g. https://raw.githubusercontent.com/username/reponame/path/to/file).
-2. To save this file to your computer, open a terminal window and type
+2. To save this file to your computer, open a terminal window and enter
     
-        wget https://raw.githubusercontent.com/username/reponame/path/to/file
+        wget https://raw.githubusercontent.com/username/reponame/path/to/file --no-check-certificate
+   
+   "--no-check-certificate" allows the user to connect to GitHub insecurely and download files successfully.
     
 ### Dependencies of ADCP_lvl1_process.R and ADCP_lvl1_process_pycalled.R
 To install dependencies in R:
