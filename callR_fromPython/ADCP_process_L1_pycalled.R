@@ -37,6 +37,14 @@ mean_orientation <- function(orientation){
   }
 }
 
+
+# Use to calculate mode of pressure and determine if pressure sensor missing
+getmode <- function(v){
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+
 ########################################
 
 # Make the R script executable from Python:
@@ -53,9 +61,6 @@ meta <- myArgs[3]
 
 setwd(wd)
 
-
-#f <- '/home/hourstonh/Documents/Hana_D_drive/ADCP_processing/callR_fromPython/20568-A1-56.000'
-#meta <- '/home/hourstonh/Documents/Hana_D_drive/ADCP_processing/ADCP/a1_20160713_20170513_0480m/P01/a1_20160713_20170513_0480m_meta_L1.csv'
 
 # Create standard name from raw file name (WITH data type and processing level add-on)
 ncname_L <- paste0(substr(basename(f), 1, nchar(basename(f))-4), '.adcp.L1')
