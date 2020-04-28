@@ -46,5 +46,5 @@ To install dependencies in R:
     install.packages("english")
     
 ## Credits
-The *ADCP_process_lvl1.R* and *ADCP_process_lvl1_pycalled.R* scripts are based off a sample script written by Emily Chisholm (https://github.com/Echisholm21). The *plot_westcoast_nc_P01.py* script was written by Di Wan (https://github.com/onedwd).
+The *ADCP_process_L1.R* and *ADCP_process_L1_pycalled.R* scripts are based off a sample script written by Emily Chisholm (https://github.com/Echisholm21). The *plot_westcoast_nc_P01.py* script was written by Di Wan (https://github.com/onedwd).
         
