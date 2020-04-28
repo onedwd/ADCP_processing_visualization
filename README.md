@@ -4,7 +4,7 @@ This repository contains files associated with using the `ADCP` package (https:/
 #### Sample files for using the `ADCP` package
 ADCP metadata template: *ADCP_metadata_template/ADCP_metadata_template_L1.csv*
 
-R processing script: *ADCP_process_lvl1.R*
+R processing script: *ADCP_process_L1.R*
 
 #### Plotting from netCDF files
 Python script for creating N/E and along- and cross-shore current velocity plots from a netCDF-format ADCP file: *plot_westcoast_nc_P01.py*
