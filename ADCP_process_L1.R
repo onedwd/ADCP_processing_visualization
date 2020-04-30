@@ -71,6 +71,8 @@ adp <- oceSetMetadata(adp, 'water_depth', as.numeric(adp[['water_depth']]))
 
 # Update naming_authority from CF v52 to CF v72
 adp <- oceSetMetadata(adp, 'naming_authority', 'BODC, MEDS, CF v72')
+# Correct flag_meanings attribute to follow BODC SeaDataNet
+adp <- oceSetMetadata(adp, 'flag_meaning', 'no_quality_control, good_value, probably_good_value, probably_bad_value, bad_value, changed_value, value_below_detection, value_in_excess, interpolated_value, missing_value')
 
 #For numbers starting with 0 so they have leading zero added back in
 if (nchar(adp[['serialNumber']]) == 3){
